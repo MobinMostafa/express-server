@@ -1,6 +1,16 @@
 import express, {Request, Response} from 'express'
+import dotenv from 'dotenv'
+import {Pool} from "pg"
+
+dotenv.config()
+
 const app = express()
-const port = 5000
+const port = process.env.PORT
+
+
+const pool = new Pool({
+   connectionString: process.env.DATABASE_URL, 
+})
 
 // parser 
 
