@@ -114,6 +114,41 @@ app.get('/users/:id', async (req: Request, res: Response) => {
    }
 })
 
+app.put("/users/:id", async (req: Request, res: Response) => {
+    try {
+        const {id} = req.params
+        const {name, email, age, phone, address} = req.body
+        const result = await pool.query(`UPDATE users SET name = $1, email = $2, age = $3, phone = $4, address = $5 WHERE id = $6 RETURNING *`, [name, email, age, phone, address, id])
+        res.status(200).json({
+            success: true,
+            data: result.rows[0]
+        })
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: 'Error updating data in database',
+            error: error.message
+        })
+    }
+})
+
+app.delete("/users/:id", async (req: Request, res: Response) => {
+    try {
+        const {id} = req.params
+        const result = await pool.query(`DELETE FROM users WHERE id = $1 RETURNING *`, [id])
+        res.status(200).json({
+            success: true,
+            data: result.rows[0]
+        })
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting data from database',
+            error: error.message
+        })
+    }
+})
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
