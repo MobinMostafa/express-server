@@ -150,6 +150,30 @@ app.delete("/users/:id", async (req: Request, res: Response) => {
 })
 
 
+// todos start 
+
+app.post('/todos', async (req: Request, res: Response) => {
+    const {user_id, title, description} = req.body
+
+    try {
+        const result = await pool.query(`INSERT INTO todos (user_id, title, description) VALUES ($1, $2, $3) RETURNING *`, [user_id, title, description])
+        res.status(201).json({
+            success: true,
+            data: result.rows[0]
+        })
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: 'Error inserting data into database',
+            error: error.message
+        })
+    }
+})  
+
+
+
+
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
